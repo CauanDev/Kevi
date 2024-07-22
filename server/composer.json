@@ -1,0 +1,31 @@
+{
+    "require": {
+        "slim/slim": "^4.14",
+        "slim/psr7": "^1.7",
+        "php-di/php-di": "^7.0",
+        "php":"^8.3",
+        "ext-curl":"*",
+        "ext-json":"*",
+        "ext-pdo": "*",
+        "ext-pdo_pgsql": "*",
+        "illuminate/database": "^11.16",
+        "vlucas/phpdotenv": "^5.6",
+        "doctrine/dbal": "^4.0",
+        "illuminate/events": "^11.16",
+        "illuminate/filesystem": "^11.16",
+        "nesbot/carbon": "^3.7",
+        "tuupola/cors-middleware": "^1.4",
+        "dragonmantank/cron-expression": "^3.3"
+    },  
+    "autoload": {
+    "psr-4": {
+        "App\\": "app/",
+        "Http\\": "app/Http/"
+
+    }
+},  
+    "scripts": {
+        "start": "php -S localhost:8000 -t public"
+      
+    }
+}

@@ -1,0 +1,10 @@
+1: crontab -e
+2: * * * * * /usr/bin/php /home/kel/Desktop/Kevi-Teste/server/app/services/scheduled_tasks.php >> /home/kel/Desktop/Kevi-Teste/server/app/services/scheduled_tasks.log 2>&1
+3: crontab -l
+
+
+
+// desativar
+
+1: crontab -e
+2: encontara a linha, e comenta com # e salva
