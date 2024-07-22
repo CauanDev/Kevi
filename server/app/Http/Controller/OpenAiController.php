@@ -3,6 +3,7 @@
 namespace App\Http\Controller;
 
 
+use DateTime;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Dotenv\Dotenv;
@@ -17,28 +18,19 @@ class OpenAiController
     public function question(Request $request, Response $response)
     {
         $data = json_decode($request->getBody(), true);
-        if (isset($data['body'])) {
-            $question_date = $data['body']['date'];
-            $question_text = $data['body']['text'];
-        
-            $questions = [
-                'date' => $question_date,
-                'text' => $question_text
-            ];
-        
-            $apiResponses = [];
-        
-            foreach ($questions as $key => $question) {
+        if (isset($data['date'])) {
+            $question_date = $data['date'];    
+            
                 $body = [
-                    'model' => 'gpt-3.5-turbo',
+                    'model' => 'gpt-4',
                     'messages' => [
                         [
                             'role' => 'user',
-                            'content' => $question
+                            'content' => $question_date
                         ]
                     ],
                     'max_tokens' => 100,
-                    "temperature" => 0.8
+                    "temperature" => 0.2
                 ];
         
                 $ch = curl_init();
@@ -60,15 +52,55 @@ class OpenAiController
                 }
         
                 $apiResponseData = json_decode($apiResponse, true);
-                $apiResponses[$key] = $apiResponseData['choices'][0]["message"]["content"];
+                $apiResponseData = $apiResponseData['choices'][0]["message"]["content"];
+                $now = date('d/m/Y');
+                
+                $question_date = "Se hoje é '$now', qual será a data de $apiResponseData? Formate a resposta apenas como dd/mm/yyyy H:M .";
+                $body = [
+                    'model' => 'gpt-4',
+                    'messages' => [
+                        [
+                            'role' => 'user',
+                            'content' => $question_date
+                        ]
+                    ],
+                    'max_tokens' => 100,
+                    "temperature" => 0.2
+                ];
+ 
+
+                $ch = curl_init();
+                curl_setopt_array($ch, [
+                    CURLOPT_URL => $this->url,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_POST => true,
+                    CURLOPT_POSTFIELDS => json_encode($body),
+                    CURLOPT_HTTPHEADER => [
+                        'Content-Type: application/json',
+                        'Authorization: Bearer ' . $this->apiKey,
+                    ],
+                ]);
         
+                $apiResponse = curl_exec($ch);
+        
+                if (curl_errno($ch)) {
+                    return json_encode(['error' => curl_error($ch)]);
+                }
+
+
+
                 curl_close($ch);
-            }
+            
         
-            $response->getBody()->write(json_encode([
-                "text" => $apiResponses['text'],
-                "date" => $apiResponses['date']
-            ]));
+
+            
+            $apiResponse = json_decode($apiResponse, true);
+            $apiResponse = $apiResponse['choices'][0]["message"]["content"];
+
+            $today = new DateTime();
+            $compare = DateTime::createFromFormat('d/m/Y H:i', $apiResponse);
+            if($compare < $today) $response->getBody()->write('false');
+            else $response->getBody()->write(json_encode($apiResponse));
         
             return $response;
         }
@@ -108,7 +140,8 @@ class OpenAiController
             curl_close($ch);
             $apiResponseData = json_decode($apiResponse, true);
             $message = $apiResponseData['choices'][0]["message"]["content"];
-            $response->getBody()->write(json_encode($message));
+            if ($message==="false")$response->getBody()->write('false');
+            else $response->getBody()->write(json_encode($message));
             return $response;            
         }
 
