@@ -28,7 +28,7 @@ $capsule->bootEloquent();
 $now = date('Y-m-d H:i:s');
 
 $tasks = Schedule::where('scheduled_at', '<=', $now)
-                ->where('status', 'Ainda Nao Postado')
+                ->where('status', 'Ainda Não Postado')
                 ->get();
 
 foreach ($tasks as $task) {

@@ -14,8 +14,8 @@
     <TitleView :firstPart="'Mensagens'" :secondPart="'Geradas'" :lastPart="'por IA'"/>
 
 
+    
     <div class="w-full flex justify-center items-center mt-5 flex-col gap-2"> 
-
     <div class="w-[50%] mb-4 border border-gray-200 rounded-lg bg-gray-100 border-gray-400">
         <div class="px-4 py-2 bg-white rounded-t-lg ">
             <textarea v-model="question" rows="4" class="w-full resize-none px-0 text-sm text-gray-900 bg-white border-0 focus:outline-none" placeholder="Escreva o seu Lembrete" ></textarea>
@@ -42,7 +42,7 @@
         </span>
         </div>
         <input @blur="findPhone" class="text-center bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" v-model="schedule.phone" />
-        <p class="text-xs" :class="{'text-red-500':!userFound}">{{userFoundText}}</p>
+        <p class="text-xs mt-1" :class="{'text-red-500':!userFound}">{{userFoundText}}</p>
     </div>
     
     <div class="flex justify-center items-center gap-2">
@@ -65,7 +65,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" @click="refreshText('date')" class="w-5 cursor-pointer" fill="gray" viewBox="0 0 24 24"><path d="M13.5 2c-5.621 0-10.211 4.443-10.475 10h-3.025l5 6.625 5-6.625h-2.975c.257-3.351 3.06-6 6.475-6 3.584 0 6.5 2.916 6.5 6.5s-2.916 6.5-6.5 6.5c-1.863 0-3.542-.793-4.728-2.053l-2.427 3.216c1.877 1.754 4.389 2.837 7.155 2.837 5.79 0 10.5-4.71 10.5-10.5s-4.71-10.5-10.5-10.5z"/></svg>      
 
     </div>
-    <button type="button" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2" @click="createSchedule" :disabled="!sheduleValidate()">Criar Lembrete</button>
+    <button type="button" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 mt-2" @click="createSchedule" :disabled="!sheduleValidate()">Criar Lembrete</button>
 
 </div>
 
@@ -124,22 +124,23 @@ export default{
         }
     },
     methods: {
-    formatDate() {
-    const daysOfWeek = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-    const now = new Date();
+    formatDate() 
+    {
+        const daysOfWeek = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+        const now = new Date();
 
-    const dayOfWeek = daysOfWeek[now.getDay()];
+        const dayOfWeek = daysOfWeek[now.getDay()];
 
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = now.getFullYear();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
 
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');  
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');  
 
-    
+        
 
-    return [`${day}-${month}-${year} ${hours}:${minutes} - HOJE EH ${dayOfWeek.toUpperCase()}`,helperGpt[dayOfWeek]];
+        return [`${day}-${month}-${year} ${hours}:${minutes} - HOJE EH ${dayOfWeek.toUpperCase()}`,helperGpt[dayOfWeek]];
     },
     updateCurrentSlide(newSlide) {
       this.schedule.character = this.characters[newSlide].name
@@ -361,6 +362,8 @@ export default{
                 this.date = this.schedule.date
                 this.loading = false;
                 this.subtitle = "Lembrete Adicionado com Sucesso"
+                this.svgPhone = true
+                this.question = ""
                 this.sucessModal = true           
                 this.userFoundText = "Procurar Usuario (Ex: 67984531027)"            
                 Object.keys(this.schedule).forEach(key => {

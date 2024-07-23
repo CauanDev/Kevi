@@ -9,6 +9,23 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 class ScheduleController 
 {
+    public function filter(Request $request, Response $response)
+    {
+        $data = json_decode($request->getBody(), true);
+        $query = Schedule::query();
+        if(isset($data['startDate']))$query->where('scheduled_at', '>=', $data['startDate']);
+
+        if(isset($data['endDate']))$query->where('scheduled_at', '<=' ,$data['endDate'] );
+        if(isset($data['status']) && $data['status']!=='all')$query->where('status' ,'=', $data['status'] );
+        if(isset($data['character'])&& $data['character']!=='all')$query->where('character' ,'=', $data['character'] );
+
+        $query->orderBy('status', 'asc')->get();
+        $result = $query->get();
+
+        $response->getBody()->write(json_encode($result));
+        return $response;
+
+    }
     public function destroy(Request $request, Response $response)
     {
         $data = json_decode($request->getBody(), true);
@@ -41,7 +58,7 @@ class ScheduleController
                 'message' => $data['message'],
                 "phone"=> $data["phone"],
                 'newMessage' => $data["newMessage"],
-                'status' => "Ainda Nao Postado",
+                'status' => "Ainda Não Postado",
                 'character' => $data['character'],
                 'scheduled_at' => $date
             ]);     

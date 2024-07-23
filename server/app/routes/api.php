@@ -17,8 +17,8 @@ return function (App $app)
         $app->post('/store-schedule', [ScheduleController::class, 'store']);
         $app->get('/schedules',[ScheduleController::class, 'index']);
         $app->post('/destroy',[ScheduleController::class,'destroy']);
-        $app->post('/teste',[ScheduleController::class,'teste']);
-
+        $app->post('/schedule-filter',[ScheduleController::class,'filter']);
+        
         $app->post('/send',[ZApiController::class,'send']);
         $app->post('/verify-contact',[ZApiController::class,'index']);
         $app->get('/verify-instance',[ZApiController::class,'instance']);
